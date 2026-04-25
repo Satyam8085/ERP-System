@@ -1,6 +1,6 @@
 import { getStoredUser } from "./authStorage";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://erp-system-unm2.onrender.com/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://erp-system-miao.onrender.com/api";
 
 async function request(path, options = {}) {
   const currentUser = getStoredUser();
