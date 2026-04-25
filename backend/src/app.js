@@ -6,28 +6,51 @@ import erpRoutes from "./routes/erpRoutes.js";
 
 const app = express();
 
+// ✅ Allowed origins (local + deployed frontend)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://erp-system-lemon-sigma.vercel.app"
+];
+
+// ✅ CORS configuration
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://erp-system-lemon-sigma.vercel.app",
+    origin: function (origin, callback) {
+      // allow requests with no origin (like Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("❌ CORS not allowed: " + origin));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true
   })
 );
+
+// ✅ Middleware
 app.use(express.json());
 
-app.get("/api/health", (_request, response) => {
-  response.json({
+// ✅ Health check
+app.get("/api/health", (_req, res) => {
+  res.json({
     success: true,
-    message: "ERP backend is running.",
+    message: "ERP backend is running 🚀",
   });
 });
 
+// ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/erp", erpRoutes);
 
-app.use((_request, response) => {
-  response.status(404).json({
+// ❌ 404 handler
+app.use((_req, res) => {
+  res.status(404).json({
     success: false,
-    message: "Route not found.",
+    message: "Route not found",
   });
 });
 
