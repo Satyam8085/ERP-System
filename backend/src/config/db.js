@@ -9,7 +9,7 @@ export async function connectDatabase() {
   }
 
   try {
-    await mongoose.connect(mongoUri);
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB.");
     return { connected: true, mode: "mongo" };
   } catch (error) {
